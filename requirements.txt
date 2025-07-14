@@ -2,3 +2,4 @@ python-telegram-bot==20.8
 python-dotenv
 beautifulsoup4==4.13.4
 requests
+requests-html

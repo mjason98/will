@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 
 DEFAULT_URL = "https://www.willhaben.at/iad/immobilien/mietwohnungen/mietwohnung-angebote?sfId=2b56243b-42ca-4fa1-a200-14b483179e25&isNavigation=true&NO_OF_ROOMS_BUCKET=3X3&NO_OF_ROOMS_BUCKET=4X4&rows=30&areaId=117223&areaId=117224&areaId=117225&areaId=117226&areaId=117227&areaId=117228&areaId=117229&areaId=117230&areaId=117231&page=1&PRICE_FROM=700&PRICE_TO=1300"
 
+
 class HousesStore:
     def __init__(self):
         self.houses_set = {}
@@ -52,5 +53,6 @@ def request_wills_house_ids(url:str = DEFAULT_URL) -> list[str]:
 
 if __name__ == "__main__":
     ids = request_wills_house_ids()
+    # ids = asyncio.run(request_wills_house_ids())
     print(ids)
     print(f"Found {len(ids)} houses.")

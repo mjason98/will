@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 # Replace with your bot token
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-WILL_UPDATE = 59  # Update interval in seconds
+WILL_UPDATE = 30  # Update interval in seconds
 
 # house data =============
 HOUSES_SET = HousesStore()
