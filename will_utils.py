@@ -9,8 +9,9 @@ class HousesStore:
     def __init__(self):
         self.houses_set = {}
         self.last_update = 0
+        self.users_time = {}
 
-    def update(self, ids: list[str]) -> int:
+    def update(self, ids: list[str], user_id:str|None = None) -> int:
         current_time = time()
         update_set = {}
         for ide in ids:
@@ -19,15 +20,22 @@ class HousesStore:
         
         self.houses_set.update(update_set)
         self.last_update = current_time
+
+        if user_id:
+            self.users_time[user_id] = current_time
         
         return len(update_set) > 0
 
     def is_updated(self, interval: float) -> bool:
         return time() - self.last_update >= interval
     
-    def is_new(self, current_time: float) -> bool:
+    def is_new(self, user_id: str) -> bool:
+        last_user_time = self.users_time.get(user_id, 0)
+        current_time = time()
+        self.users_time[user_id] = current_time
+
         for k in self.houses_set:
-            if self.houses_set[k] > current_time:
+            if self.houses_set[k] > last_user_time:
                 return True
         return False
 

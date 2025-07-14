@@ -26,14 +26,14 @@ HOUSES_SET = HousesStore()
 async def periodic_task(context: ContextTypes.DEFAULT_TYPE) -> None:
     global HOUSES_SET
 
-    already_new = HOUSES_SET.is_new(time())
+    already_new = HOUSES_SET.is_new(str(context.job.chat_id)) # type: ignore
     is_new_update = False
 
     if HOUSES_SET.is_updated(WILL_UPDATE):
         logger.info(f"Requested new update")
         ids = request_wills_house_ids()
         logger.info(f"New IDs: {ids}")
-        is_new_update = HOUSES_SET.update(ids)
+        is_new_update = HOUSES_SET.update(ids, str(context.job.chat_id)) # type: ignore
 
     logger.info(f"new update: {is_new_update}, already new: {already_new}")
 
