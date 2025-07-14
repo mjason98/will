@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 # Replace with your bot token
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-WILL_UPDATE = 5
+WILL_UPDATE = 59  # Update interval in seconds
 
 # house data =============
 HOUSES_SET = HousesStore()
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     if not BOT_TOKEN:
         logger.error("BOT_TOKEN is not set. Please set it in the .env file.")
         exit(1)
-        
+
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
