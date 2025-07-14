@@ -34,6 +34,7 @@ async def periodic_task(context: ContextTypes.DEFAULT_TYPE) -> None:
         ids = request_wills_house_ids()
         is_new_update = HOUSES_SET.update(ids)
 
+    logger.info(f"new update: {is_new_update}, already new: {already_new}")
 
     if is_new_update or already_new:
         logger.info(f"New houses found in update")
