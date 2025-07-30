@@ -3,7 +3,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 import logging, os
 from time import time
 from dotenv import load_dotenv
-from will_utils import request_wills_house_ids, HousesStore
+from will_utils import request_wills_house_ids_url, HousesStore
 
 load_dotenv()
 
@@ -26,22 +26,27 @@ HOUSES_SET = HousesStore()
 async def periodic_task(context: ContextTypes.DEFAULT_TYPE) -> None:
     global HOUSES_SET
 
+    new_urls = set()
     already_new = HOUSES_SET.is_new(str(context.job.chat_id)) # type: ignore
-    is_new_update = False
+    new_urls |= already_new
 
     if HOUSES_SET.is_updated(WILL_UPDATE):
         logger.info(f"Requested new update")
-        ids = request_wills_house_ids()
+        ids_data = request_wills_house_ids_url()
+        ids = list(ids_data.keys())
+        urls = [data["url"] for data in ids_data.values()]
         logger.info(f"New IDs: {ids}")
-        is_new_update = HOUSES_SET.update(ids, str(context.job.chat_id)) # type: ignore
+        update_set = HOUSES_SET.update(ids, urls, str(context.job.chat_id)) # type: ignore
+        new_urls |= update_set
+    
+    is_new_update = len(new_urls) > 0
+    logger.info(f"new update: {is_new_update}")
 
-    logger.info(f"new update: {is_new_update}, already new: {already_new}")
-
-    if is_new_update or already_new:
+    if is_new_update:
         logger.info(f"New houses found in update")
-        await context.bot.send_message(chat_id=context.job.chat_id,  # type: ignore
-                                       text=f"New houses found\!",   # type: ignore
-                                       parse_mode="MarkdownV2")
+        for url in new_urls:
+            await context.bot.send_message(chat_id=context.job.chat_id,  # type: ignore
+                                           text=f"New house: {url}")
 
 # /start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
